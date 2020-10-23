@@ -1,2 +1,2 @@
 # PolySchedule_bot
-Telegram bot that allow russian students of SPBSTU to receive schedule(of their group) daily, with an addition of weather and news. 
+Telegram bot that allows russian students of SPBSTU to receive schedule(of their group) daily, with the addition of weather and news. 
