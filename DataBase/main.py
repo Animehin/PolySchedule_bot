@@ -1,4 +1,4 @@
-from PolySchedule_bot.DataBase import HomeWork as HW, Schedule as sch, Students as st
+from PolySchedule_bot.DataBase.DataBase import HomeWork as HW, Schedule as sch, Students as st
 import datetime as dt
 
 

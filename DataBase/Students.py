@@ -6,7 +6,7 @@ collectionSt = dbSt['TgBotStudents']
 
 
 def bdStudents():
-    lineList = [line.rstrip('\n') for line in open('Students parsed.txt', encoding="utf8")]
+    lineList = [line.rstrip('\n') for line in open('../Students parsed.txt', encoding="utf8")]
     split = {}
     # fname = {}
     # name = {}
