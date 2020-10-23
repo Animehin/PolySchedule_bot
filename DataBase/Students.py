@@ -36,17 +36,3 @@ def updateTGLogin(fname, name, pgroup, tglogin):
 def addSt(fname, name, pgroup):
     post_id = collectionSt.insert_one(
         {"fname": fname, "name": name, "pgroup": pgroup})
-
-# clientSt = MongoClient('localhost', 27017)
-# dbSt = clientSt['TgBot']
-# collection = dbSt['TgBotStudents']
-
-# post = {"fname": "Stashevskii",
-#         "name": "Ian",
-#         "pgroup": "3530904/70105"}
-# post_id = collectionSt.insert_one(post).inserted_id
-#
-# post_id = collectionSt.update_one({"fname": "Stashevskii",
-#                                  "name": "Ian",
-#                                  "pgroup": "3530904/70105"},
-#                                 {"$set": {"tglogin": "agaga"}})
