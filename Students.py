@@ -33,8 +33,6 @@ def updateTGLogin(fname, name, pgroup, tglogin):
                                       {"$set": {"tglogin": tglogin}})
 
 
-# Хз типа добавляем логин к студенту(происходит поиск(см. комментарий changeGroupNum), к студенту добавляется его логин в телеграммq)
-
 def addSt(fname, name, pgroup):
     post_id = collectionSt.insert_one(
         {"fname": fname, "name": name, "pgroup": pgroup})
