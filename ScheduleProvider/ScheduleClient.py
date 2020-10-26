@@ -17,19 +17,27 @@ def getSchedule(groupNumber, date):
                 groupUrl = scheduleUrl + group.a.attrs['href']
                 response = requests.get(url=groupUrl)
                 schedule = parseSchedule(response, date)
-                #print(schedule)
     except TypeError:
         return ""
+
 
 def parseSchedule(response, date):
     soup = BeautifulSoup(str(response.text), 'lxml')
     try:
-        for day in soup.ul:
-            currentDate = convertToDateFormat(day.div.text)
-            print(currentDate)
+        schedule = {}
+        for day in soup.findAll("li", "schedule__day"):
+            lessions = {}
+            currentDate = convertToDateFormat(day.find("div", "schedule__date").text)
+            schedule[currentDate] = []
+            for lesson in day.findAll("li", "lesson"):
+                dataReactId = lesson.find("span", "lesson__time").attrs['data-reactid']
+                lessonTime = lesson.find("span", "lesson__time").text
+                lessonName = lesson.find("span", {"data-reactid":dataReactId[:-1]+str(2)}).text
+                temp = [lessonTime, lessonName] #{'10:00-11:40', 'Нейронные сети'}
+                schedule[currentDate].append(temp)
+        return schedule
     except Exception:
-        print("b")
-
+        print("Something went wrong")
 
 
 getSchedule("3530904/70105", "26.09.2020")
