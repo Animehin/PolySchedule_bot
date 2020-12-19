@@ -9,6 +9,9 @@ from dateutil.parser import parse
 scheduleUrl = "https://ruz.spbstu.ru"
 
 
+# getSchedule("3530904/70105", "25.12.2020") - call example
+# If anything goes wrong, returns empty string ("")
+
 def getSchedule(groupNumber, date):
     searchUrl = scheduleUrl + "/search/groups?q=" + groupNumber.replace('/', '%2F')
 
@@ -37,13 +40,15 @@ def parseSchedule(response, date):
             convertedCurrentDate = parse(currentDate, dayfirst=True)
             if convertedCurrentDate < startDate: continue
             if convertedCurrentDate > finishDate: break
-            schedule[currentDate] = []
+            schedule[currentDate] = {}  # {'time':'10:00-11:40', 'scheduledClass':'Нейронные сети', 'classType':'Практика'}
             for lesson in day.findAll("li", "lesson"):
                 dataReactId = lesson.find("span", "lesson__time").attrs['data-reactid']
                 lessonTime = lesson.find("span", "lesson__time").text
+                lessonType = lesson.find("div", "lesson__type").text
                 lessonName = lesson.find("span", {"data-reactid": dataReactId[:-1] + str(2)}).text
-                temp = [lessonTime, lessonName]  # {'10:00-11:40', 'Нейронные сети'}
-                schedule[currentDate].append(temp)
+                schedule[currentDate]['time'] = lessonTime
+                schedule[currentDate]['scheduledClass'] = lessonName
+                schedule[currentDate]['classType'] = lessonType
         nextPageUrl = soup.find("a", "switcher__link", "text", "Следующая неделя").attrs['href']
         nextPageDate = parse(re.match(".+date=(.+)", nextPageUrl).group(1))
         if nextPageDate < finishDate:
@@ -51,8 +56,4 @@ def parseSchedule(response, date):
             schedule.update(parseSchedule(newResponse, date))
         return schedule
     except Exception:
-        print("Something went wrong")
         return ""
-
-
-getSchedule("3530904/70105", "01.11.2020")
