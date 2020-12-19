@@ -1,15 +1,43 @@
-from pymongo import MongoClient
+import re
 
-clientHW = MongoClient('localhost', 27017)
+import pymongo
+
+clientHW = pymongo.MongoClient('localhost', 27017)
 dbHW = clientHW['TgBot']
 collectionHW = dbHW['TgBotHW']
+collectionHWList = []
 
 
-def updHomeWork(pgroup, date, className, homeWork):
-    post_id = collectionHW.update_one({"pgroup": pgroup, "date": date, "className": className},
-                                      {"$set": {"homeWork": homeWork}})
+def upd_home_work(pgroup, date, className, homeWork):
+    collectionHW.update_one({"pgroup": pgroup, "date": date, "className": className},
+                            {"$set": {"homeWork": homeWork}})
 
 
-def addHomeWork(pgroup, date, className, homeWork):
-    post_id = collectionHW.insert_one({
-        "pgroup": pgroup, "date": date, "className": className, "homeWork": homeWork})
+def add_home_work(pgroup, date, className, homeWork, tgLogin):
+    if (re.search('[0-9]', pgroup) is None) or (re.search('[а-яА-Я]', className) is None) or (
+            re.search('[а-яА-Я]', homeWork) is None) or (re.search('[a-zA-Z]', tgLogin) is None):
+        return False
+
+    if collectionHW.find_one(
+            {"pgroup": pgroup, "date": date, "className": className, "tgLogin": tgLogin}) is None:
+        try:
+            collectionHW.insert_one({
+                "pgroup": pgroup, "date": date, "className": className, "homeWork": homeWork, "tgLogin": tgLogin
+            })
+        except pymongo.errors.WriteError:
+            return False
+    else:
+        upd_home_work(pgroup, date, className, homeWork)
+
+    return True
+
+
+def read_home_work_cur(pgroup, date, className):
+    return collectionHW.find({"pgroup": pgroup, "date": date, "className": className}, {"_id": 0})
+
+
+def read_home_work(pgroup, date, className):
+    res = read_home_work_cur(pgroup, date, className)
+    for i in res:
+        collectionHWList.append(i)
+    return collectionHWList
