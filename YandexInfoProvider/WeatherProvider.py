@@ -1,13 +1,11 @@
 import requests
 import datetime
 from dateutil.parser import parse
-
+from bs4 import BeautifulSoup
 
 lat = 60.007624
 lon = 30.373195
-xYandexAPIKey = "966ea85c-0f8d-4995-80a8-cba72f31ee68"
-
-selectedDate = datetime.date(2020, 12, 16)
+xYandexAPIKey = ""
 
 
 def getYandexResponse():
@@ -15,14 +13,14 @@ def getYandexResponse():
     global lat, lon
 
     response = requests.get(url=f'https://api.weather.yandex.ru/v2/forecast?lat={lat}&lon={lon}',
-                            headers={"X-Yandex-API-Key":xYandexAPIKey})
+                            headers={"X-Yandex-API-Key": xYandexAPIKey})
     return response.json()
 
 
 def getWeatherForDate(date):
     basicWeatherInformation = {}
     response = getYandexResponse()
-    neededDate = parse(date, dayfirst = True)
+    neededDate = parse(date, dayfirst=True)
 
     if neededDate == datetime.date.today():
         for key in response["fact"]:
@@ -37,5 +35,3 @@ def getWeatherForDate(date):
                     if key in ("temp_avg", "condition", "wind_speed", "wind_gust", "wind_dir"):
                         basicWeatherInformation[key] = forecasts[i]["parts"]["morning"][key]
     return basicWeatherInformation
-
-print(getWeatherForDate(str(selectedDate)))
