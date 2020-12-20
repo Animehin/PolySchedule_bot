@@ -5,7 +5,6 @@ import pymongo
 clientHW = pymongo.MongoClient('localhost', 27017)
 dbHW = clientHW['TgBot']
 collectionHW = dbHW['TgBotHW']
-collectionHWList = []
 
 
 def upd_home_work(pgroup, date, className, homeWork):
@@ -32,16 +31,11 @@ def add_home_work(pgroup, date, className, homeWork, tgLogin):
     return True
 
 
-def read_home_work_cur(pgroup, date, className):
-    hwCur = collectionHW.find({"pgroup": pgroup, "date": date, "className": className}, {"_id": 0})
-    if hwCur is None:
-        return "Невозможно найти нынешнюю домащнюю работу"
-    else:
-        return hwCur
-
-
 def read_home_work(pgroup, date, className):
-    res = read_home_work_cur(pgroup, date, className)
+    hwlist = []
+    res = collectionHW.find({"pgroup": pgroup, "date": date, "className": className}, {"_id": 0})
+    if res is None:
+        return hwlist
     for i in res:
-        collectionHWList.append(i)
-    return collectionHWList
+        hwlist.append(i)
+    return hwlist
