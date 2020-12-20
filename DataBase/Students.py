@@ -32,8 +32,7 @@ def change_group_num(fname, name, pgroupOld, pgroupNew):
 
 def update_tg_login(fname, name, pgroup, tgLogin):
     if collectionSt.find_one({"fname": fname, "name": name, "pgroup": pgroup}) is None:
-        add_student(fname, name, pgroup)
-        update_tg_login(fname, name, pgroup, tgLogin)
+        return "Такого студента нет"
     else:
         collectionSt.update_one({"fname": fname, "name": name, "pgroup": pgroup},
                                 {"$set": {"tgLogin": tgLogin}})
