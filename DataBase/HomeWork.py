@@ -2,6 +2,7 @@ import re
 from datetime import datetime
 
 import pymongo
+from dateutil.parser import parse
 
 clientHW = pymongo.MongoClient('localhost', 27017)
 dbHW = clientHW['TgBot']
@@ -41,7 +42,7 @@ def read_home_work(pgroup):
     if res is None:
         return hwlist
     for lesson in res:
-        if lesson["date"] >= today:
+        if parse(lesson["date"], dayfirst=True) >= today:
             hwlist.append(lesson)
         else:
             collectionHW.delete_one({"date": lesson["date"]})
