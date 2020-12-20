@@ -19,31 +19,49 @@ def bd_students():
 # Заполнение бд студентами(фаил уже должен быть приведен к стандарту "фамилия имя номер_потока/номер_группы\n")
 
 def change_group_num(fname, name, pgroupOld, pgroupNew):
-    if collectionSt.find_one({"fname": fname, "name": name, "pgroup": pgroupOld}) == None:
-        return ("This user is not exist")
+    if collectionSt.find_one({"fname": fname, "name": name, "pgroup": pgroupOld}) is None:
+        return "Пользователь не существует"
     else:
         collectionSt.update_one({"fname": fname, "name": name, "pgroup": pgroupOld},
                                 {"$set": {"pgroup": pgroupNew}})
-        return "Group number updated successfully"
+        return "Номер группы успешно изменён"
 
 
-# Изменение номера группы(проводится поиск по фамилии, имени и номер_потока/номер_группы(старый), после чего старый номер группы меняется на новый)
+# Изменение номера группы(проводится поиск по фамилии, имени и номер_потока/номер_группы(старый), после чего старый
+# номер группы меняется на новый)
 
-def update_tg_login(fname, name, pgroup, tglogin):
-    if collectionSt.find_one({"fname": fname, "name": name, "pgroup": pgroup}) == None:
+def update_tg_login(fname, name, pgroup, tgLogin):
+    if collectionSt.find_one({"fname": fname, "name": name, "pgroup": pgroup}) is None:
         add_student(fname, name, pgroup)
-        update_tg_login(fname, name, pgroup, tglogin)
+        update_tg_login(fname, name, pgroup, tgLogin)
     else:
         collectionSt.update_one({"fname": fname, "name": name, "pgroup": pgroup},
-                                {"$set": {"tglogin": tglogin}})
-        return "Telegram login updated successfully"
+                                {"$set": {"tgLogin": tgLogin}})
+        return "Телеграм логин успешно изменён"
 
 
-def get_group_num(tglogin):
-    if collectionSt.find_one({"tglogin": tglogin}, {"_id": 0, "pgroup": 1}) == None:
-        return ("This user is not exist")
+def get_group_num(tgLogin):
+    group_num = collectionSt.find_one({"tgLogin": tgLogin}, {"_id": 0, "pgroup": 1})
+    if group_num is None:
+        return "Пользователь не существует"
     else:
-        return collectionSt.find_one({"tglogin": tglogin}, {"_id": 0, "pgroup": 1})
+        return group_num
+
+
+def get_student_by_login(tgLogin):
+    student = collectionSt.find_one({"tgLogin": tgLogin})
+    if student is None:
+        return "Пользователь не существует"
+    else:
+        return student
+
+
+def get_student_by_fname(fname, name, pgroup):
+    student = collectionSt.find_one({"fname": fname, "name": name, "pgroup": pgroup})
+    if student is None:
+        return "Пользователь не существует"
+    else:
+        return student
 
 
 def add_student(fname, name, pgroup):

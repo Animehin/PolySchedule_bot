@@ -36,7 +36,7 @@ def testSchR():
 # testSt()
 # testSch()
 # testHW()
-testHWR()
+# testHWR()
 # testSt_u_TG_Login()
 # testSt_g_G_N()
 # testSchR()

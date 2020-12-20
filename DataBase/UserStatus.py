@@ -16,15 +16,23 @@ def add_user_status(tgLogin, step, data):
         try:
             collectionUS.insert_one({"tgLogin": tgLogin, "step": step, "data": data})
         except pymongo.errors.WriteError:
-            return "User cannot be added"
+            return "Пользователь не может быть добавлен"
     else:
         upd_user_status(tgLogin, step, data)
-    return "User added"
+    return "Пользователь добавлен"
 
 
 def del_user_status(tgLogin):
     if collectionUS.find_one({"tgLogin": tgLogin}) is None:
-        return "Status for {} is not exist".format(tgLogin)
+        return "Статус для пользователя {} не найден".format(tgLogin)
     else:
         collectionUS.delete_one({"tgLogin": tgLogin})
-        return "Status for {} deleted".format(tgLogin)
+        return "Статус для пользователя {} удалён".format(tgLogin)
+
+
+def read_user_status(tgLogin):
+    userStatus = collectionUS.find_one({"tgLogin": tgLogin})
+    if userStatus is None:
+        return "Пользовательский статус ненайден"
+    else:
+        return userStatus
