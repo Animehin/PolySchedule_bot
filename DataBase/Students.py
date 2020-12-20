@@ -18,12 +18,14 @@ def bd_students():
 
 # Заполнение бд студентами(фаил уже должен быть приведен к стандарту "фамилия имя номер_потока/номер_группы\n")
 
-def change_group_num(fname, name, pgroupOld, pgroupNew):
-    if collectionSt.find_one({"fname": fname, "name": name, "pgroup": pgroupOld}) is None:
+def change_group_num(fname, name, pgroupNew, tgLogin):
+    if collectionSt.find_one({"fname": fname, "name": name, "tgLogin": tgLogin}) is None:
         return "Пользователь не существует"
     else:
-        collectionSt.update_one({"fname": fname, "name": name, "pgroup": pgroupOld},
-                                {"$set": {"pgroup": pgroupNew}})
+        collectionSt.update_one({"fname": fname, "name": name, "tgLogin": tgLogin},
+                                {"$set": {"tgLogin": ""}})
+        collectionSt.update_one({"fname": fname, "name": name, "pgroup": pgroupNew},
+                                {"$set": {"tgLogin": tgLogin}})
         return "Номер группы успешно изменён"
 
 
@@ -44,7 +46,7 @@ def get_group_num(tgLogin):
     if group_num is None:
         return "Пользователь не существует"
     else:
-        return group_num
+        return group_num["pgroup"]
 
 
 def get_student_by_login(tgLogin):

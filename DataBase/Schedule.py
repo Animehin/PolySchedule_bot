@@ -2,7 +2,7 @@ import datetime
 
 import pymongo
 
-from PolySchedule_bot.ScheduleProvider import ScheduleClient
+from ScheduleProvider import ScheduleClient
 
 global last_updated
 clientSch = pymongo.MongoClient('localhost', 27017)
