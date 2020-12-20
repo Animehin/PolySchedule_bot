@@ -14,9 +14,9 @@ last_updated = {}
 def upd_schedule(pgroup):
     global last_updated
 
-    today = datetime.date.today().strftime("%d.%m.%Y")
+    today = datetime.date.today()
     schVar = ScheduleClient.getSchedule(pgroup, today)
-    if schVar is "":
+    if schVar == "":
         return "Фейлед ту апдэйте"
     collectionSch.delete_many({"pgroup": pgroup})
 
@@ -32,23 +32,16 @@ def upd_schedule(pgroup):
 def read_schedule(pgroup, date=None):
     global last_updated
 
-    if (last_updated is None) or (last_updated is not datetime.date.today().strftime("%d.%m.%Y")):
+    if (last_updated is None) or (last_updated is not datetime.date.today()):
         upd_schedule(pgroup)
+    return get_schedule_from_database(pgroup, date)
 
+
+def get_schedule_from_database(pgroup, date):
     if date is None:
-        schVar = collectionSch.find_one({"pgroup": pgroup}, {"_id": 0})
+        schVar = collectionSch.find({"pgroup": pgroup}, {"_id": 0})
     else:
-        schVar = collectionSch.find_one({"date": date, "pgroup": pgroup}, {"_id": 0})
+        schVar = collectionSch.find({"date": date, "pgroup": pgroup}, {"_id": 0})
     if schVar is None:
-        try:
-            check_schedule_collection_availability()
-        except Exception:
-            return "Ошибка {}".format(Exception)
+        return []
     return schVar
-
-
-def check_schedule_collection_availability():
-    collectionSchList = collectionSch.find()
-    if collectionSchList is None:
-        raise Exception("Расписания нет")
-    return "Расписание есть!"

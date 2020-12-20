@@ -35,13 +35,13 @@ def add_home_work(pgroup, date, time, className, classType, homeWork, tgLogin):
 
 
 def read_home_work(pgroup):
-    today = datetime.date.today().format("%d.%m.%Y")
+    today = datetime.date.today()
     hwlist = []
     res = collectionHW.find({"pgroup": pgroup}, {"_id": 0})
     if res is None:
         return hwlist
     for lesson in res:
-        if lesson["date"].format("%d.%m.%Y") >= today:
+        if lesson["date"] >= today:
             hwlist.append(lesson)
         else:
             collectionHW.delete_one({"date": lesson["date"]})
