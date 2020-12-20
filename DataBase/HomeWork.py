@@ -33,7 +33,11 @@ def add_home_work(pgroup, date, className, homeWork, tgLogin):
 
 
 def read_home_work_cur(pgroup, date, className):
-    return collectionHW.find({"pgroup": pgroup, "date": date, "className": className}, {"_id": 0})
+    hwCur = collectionHW.find({"pgroup": pgroup, "date": date, "className": className}, {"_id": 0})
+    if hwCur is None:
+        return "Невозможно найти нынешнюю домащнюю работу"
+    else:
+        return hwCur
 
 
 def read_home_work(pgroup, date, className):
