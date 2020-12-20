@@ -13,13 +13,14 @@ def upd_home_work(pgroup, date, className, homeWork):
                             {"$set": {"homeWork": homeWork}})
 
 
-def add_home_work(pgroup, date, time, className, homeWork, tgLogin):
+def add_home_work(pgroup, date, time, className, classType, homeWork, tgLogin):
     if (re.search('[0-9]', pgroup) is None) or (re.search('[а-яА-Я]', className) is None) or (
             re.search('[а-яА-Я]', homeWork) is None) or (re.search('[a-zA-Z]', tgLogin) is None):
         return False
 
     if collectionHW.find_one(
-            {"pgroup": pgroup, "date": date, "className": className, "tgLogin": tgLogin}) is None:
+            {"pgroup": pgroup, "date": date, "className": className, "classType": classType,
+             "tgLogin": tgLogin}) is None:
         try:
             collectionHW.insert_one({
                 "pgroup": pgroup, "date": date, "time": time, "className": className, "homeWork": homeWork,
