@@ -2,7 +2,10 @@ import re
 from datetime import datetime
 
 import pymongo
+import pytz
 from dateutil.parser import parse
+
+utc = pytz.UTC
 
 clientHW = pymongo.MongoClient('localhost', 27017)
 dbHW = clientHW['TgBot']
@@ -36,7 +39,7 @@ def add_home_work(pgroup, date, time, className, classType, homeWork, tgLogin):
 
 
 def read_home_work(pgroup):
-    today = datetime.date.today()
+    today = utc.localize(datetime.today())
     hwlist = []
     res = collectionHW.find({"pgroup": pgroup}, {"_id": 0})
     if res is None:
@@ -47,3 +50,6 @@ def read_home_work(pgroup):
         else:
             collectionHW.delete_one({"date": lesson["date"]})
     return hwlist
+
+
+read_home_work("3530904/70105")
