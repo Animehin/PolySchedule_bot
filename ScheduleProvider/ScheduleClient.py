@@ -1,5 +1,6 @@
 import re
 from datetime import timedelta
+import datetime
 
 import requests
 from ScheduleUtil import convertToDateFormat as convertToDateFormat
@@ -40,15 +41,13 @@ def parseSchedule(response, date):
             convertedCurrentDate = parse(currentDate, dayfirst=True)
             if convertedCurrentDate < startDate: continue
             if convertedCurrentDate > finishDate: break
-            schedule[currentDate] = {}  # {'time':'10:00-11:40', 'scheduledClass':'Нейронные сети', 'classType':'Практика'}
+            schedule[currentDate] = []  # {'time':'10:00-11:40', 'scheduledClass':'Нейронные сети', 'classType':'Практика'}
             for lesson in day.findAll("li", "lesson"):
                 dataReactId = lesson.find("span", "lesson__time").attrs['data-reactid']
                 lessonTime = lesson.find("span", "lesson__time").text
                 lessonType = lesson.find("div", "lesson__type").text
                 lessonName = lesson.find("span", {"data-reactid": dataReactId[:-1] + str(2)}).text
-                schedule[currentDate]['time'] = lessonTime
-                schedule[currentDate]['scheduledClass'] = lessonName
-                schedule[currentDate]['classType'] = lessonType
+                schedule[currentDate].append({'time': lessonTime, 'scheduledClass': lessonName, 'classType': lessonType})
         nextPageUrl = soup.find("a", "switcher__link", "text", "Следующая неделя").attrs['href']
         nextPageDate = parse(re.match(".+date=(.+)", nextPageUrl).group(1))
         if nextPageDate < finishDate:
@@ -57,3 +56,5 @@ def parseSchedule(response, date):
         return schedule
     except Exception:
         return ""
+
+print(getSchedule("3530904/70105", "2020-12-21"))
