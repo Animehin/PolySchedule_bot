@@ -3,7 +3,7 @@ from datetime import timedelta
 import datetime
 
 import requests
-from ScheduleUtil import convertToDateFormat as convertToDateFormat
+from ScheduleUtil import convertToDateFormat
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 
@@ -57,4 +57,3 @@ def parseSchedule(response, date):
     except Exception:
         return ""
 
-print(getSchedule("3530904/70105", "2020-12-21"))
