@@ -1,6 +1,6 @@
 import datetime as dt
 
-from PolySchedule_bot.DataBase.DataBase import HomeWork as HW, Schedule as sch, Students as st
+from DataBase import HomeWork as HW, Schedule as sch, Students as st
 
 
 def testSt():
