@@ -32,8 +32,9 @@ def upd_schedule(pgroup):
 def read_schedule(pgroup, date=None):
     global last_updated
 
-    if (last_updated is None) or (last_updated is not datetime.date.today()):
+    if (pgroup not in last_updated) or (last_updated[pgroup] is not datetime.date.today()):
         upd_schedule(pgroup)
+        last_updated[pgroup] = datetime.date.today()
     return get_schedule_from_database(pgroup, date)
 
 
