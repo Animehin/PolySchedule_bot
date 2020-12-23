@@ -1,21 +1,42 @@
-from PolySchedule_bot.DataBase.DataBase import HomeWork as HW, Schedule as sch, Students as st
 import datetime as dt
+
+from DataBase import HomeWork as HW, Schedule as sch, Students as st
 
 
 def testSt():
-    st.addSt("Stashevskii", "Ian", "3530904/70105")
+    st.add_student("Stashevskii", "Ian", "3530904/70105")
 
 
 def testSch():
-    date = dt.datetime.strptime("2020-10-26T14:00:00.000Z", "%Y-%m-%dT%H:%M:%S.000Z")
-    sch.addSchedule("3530904/70105", date, "Практика : Нейронные сети")
+    sch.add_schedule("3530904/70105", "10:00-11:40 20.10.2020", "Практика : Нейронные сети")
 
 
 def testHW():
-    date = dt.datetime.strptime("2020-10-26T14:00:00.000Z", "%Y-%m-%dT%H:%M:%S.000Z")
-    HW.addHomeWork("3530904/70105", date, "Практика : Нейронные сети", "FARMIT MORU")
+    a = HW.add_home_work("3530904/70105", "10:00-11:40 20.10.2020", "Практика : Нейронные сети", "Фармить мору",
+                         "@blamc1")
+    print(a)
 
 
-testSt()
-testSch()
-testHW()
+def testHWR():
+    print(HW.read_home_work("3530904/70105", "10:00-11:40 20.10.2020", "Практика : Нейронные сети"))
+
+
+def testSt_g_G_N():
+    print(st.get_group_num("@Animehin"))
+
+
+def testSt_u_TG_Login():
+    st.update_tg_login("Stashevskii", "Ian", "3530904/70105", "@Animehin")
+
+
+def testSchR():
+    print(sch.read_schedule("27.10.2020"))
+
+
+# testSt()
+# testSch()
+# testHW()
+# testHWR()
+# testSt_u_TG_Login()
+# testSt_g_G_N()
+# testSchR()
