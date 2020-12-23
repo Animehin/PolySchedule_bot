@@ -3,7 +3,7 @@ from datetime import timedelta
 import datetime
 
 import requests
-from ScheduleUtil import convertToDateFormat
+from ScheduleProvider import ScheduleUtil
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 
