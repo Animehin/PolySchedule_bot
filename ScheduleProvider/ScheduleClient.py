@@ -37,7 +37,7 @@ def parseSchedule(response, date):
     try:
         schedule = {}
         for day in soup.findAll("li", "schedule__day"):
-            currentDate = convertToDateFormat(day.find("div", "schedule__date").text)
+            currentDate = ScheduleUtil.convertToDateFormat(day.find("div", "schedule__date").text)
             convertedCurrentDate = parse(currentDate, dayfirst=True)
             if convertedCurrentDate < startDate: continue
             if convertedCurrentDate > finishDate: break
