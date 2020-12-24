@@ -14,10 +14,10 @@ last_updated = {}
 def upd_schedule(pgroup):
     global last_updated
 
-    today = datetime.date.today()
+    today = datetime.date.today().strftime("%d.%m.%Y")
     schVar = ScheduleClient.getSchedule(pgroup, today)
     if schVar == "":
-        return "Фейлед ту апдэйте"
+        return "Не удалось получить расписание"
     collectionSch.delete_many({"pgroup": pgroup})
 
     for day in schVar:
@@ -26,7 +26,7 @@ def upd_schedule(pgroup):
                 {"pgroup": pgroup, "date": day, "time": lesson["time"], "scheduledClass": lesson["scheduledClass"],
                  "classType": lesson["classType"]})
     last_updated[pgroup] = today
-    return "Апдейт кумплитэд"
+    return "Обновление расписания прошло успешно"
 
 
 def read_schedule(pgroup, date=None):
