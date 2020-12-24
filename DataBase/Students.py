@@ -32,12 +32,12 @@ def change_group_num(fname, name, pgroupNew, tgLogin):
 # Изменение номера группы(проводится поиск по фамилии, имени и номер_потока/номер_группы(старый), после чего старый
 # номер группы меняется на новый)
 
-def update_tg_login(fname, name, pgroup, tgLogin):
+def update_tg_login(fname, name, pgroup, chatId, tgLogin):
     if collectionSt.find_one({"fname": fname, "name": name, "pgroup": pgroup}) is None:
         return "Такого студента нет"
     else:
         collectionSt.update_one({"fname": fname, "name": name, "pgroup": pgroup},
-                                {"$set": {"tgLogin": tgLogin}})
+                                {"$set": {"chatId": chatId, "tgLogin": tgLogin}})
         return "Телеграм логин успешно изменён"
 
 
@@ -68,3 +68,15 @@ def get_student_by_fname(fname, name, pgroup):
 def add_student(fname, name, pgroup):
     collectionSt.insert_one(
         {"fname": fname, "name": name, "pgroup": pgroup})
+
+
+def get_all_chat_ids_and_pgroup():
+    students = {}
+    all_chat_ids_and_pgroup = []
+    request = collectionSt.find({})
+    for student in request:
+        for key in student:
+            if key == "chatId":
+                students = {"chatId": student[key], "pgroup": student["pgroup"]}
+                all_chat_ids_and_pgroup.append(students)
+    return all_chat_ids_and_pgroup
