@@ -1,3 +1,5 @@
+from threading import Thread
+
 import telebot
 import schedule
 from TgBotUI import Utils, CommonMessages
@@ -12,8 +14,14 @@ bot = telebot.TeleBot(token)
 
 @bot.message_handler(commands=['start'])
 def start_button(message):
-    message_text = 'Пример команды:\n/setgroup Группа Фамилия Имя - указание своей группы'
-    bot.send_message(message.chat.id, message_text)
+    message_text = 'Привет, укажи группу.\nПример команды:\n/setgroup Группа Фамилия Имя - указание своей группы'
+    bot.send_message(message.chat.id, message_text, reply_markup=Utils.generate_menu())
+
+
+@bot.message_handler(commands=['help'])
+def help_me(message):
+    message_text = Utils.generate_help_message()
+    bot.send_message(message.chat.id, message_text, reply_markup=Utils.generate_menu())
 
 
 @bot.message_handler(commands=['setgroup'])
@@ -24,7 +32,7 @@ def set_group(message):
         bot.send_message(message.chat.id, CommonMessages.invalid_arguments)
         UserStatus.del_user_status(user_login)
         return
-    response = Students.update_tg_login(args[1], args[2], args[0], message.from_user.username)  # name, surname, group, username
+    response = Students.update_tg_login(args[1], args[2], args[0], message.chat.id, message.from_user.username)  # name, surname, group, username
     bot.send_message(message.chat.id, response)
     UserStatus.del_user_status(user_login)
 
@@ -159,8 +167,8 @@ def message_worker(message):
     user_login = message.from_user.username
     group_num = Students.get_group_num(user_login)
     user_status = UserStatus.read_user_status(user_login)
-    print(user_status)
-    if len(user_status['data']) < 3:
+    #print(user_status)
+    if user_status == "Пользовательский статус ненайден" or len(user_status['data']) < 3:
         return
     command = user_status['data'][0]
     date = user_status['data'][1]
@@ -181,25 +189,44 @@ def message_worker(message):
 
 
 def scheduled_schedule():
-    students = Students.get_chat_ids()
-    tomorrow = (datetime.today() + timedelta(days=1)).date()
+    students = Students.get_all_chat_ids_and_pgroup()
+    tomorrow = datetime.today().date().strftime("%d.%m.%Y") #+ timedelta(days=1)).date()
     groups_schedule = {}
     nl = '\n'
     for student in students:
-        student_group = students['pgroup']
-        chat_id = students['chat_id']
+        student_group = student['pgroup']
+        chat_id = student['chatId']
         if student_group not in groups_schedule:
-            groups_schedule[student_group] = dbExt.get_scheduled_lessons(student_group, tomorrow)
+            groups_schedule[student_group] = dbExt.get_scheduled_lessons(student_group, str(tomorrow))
         if len(groups_schedule[student_group]) > 0:
-            text = f"Привет! Предметы на {tomorrow}:{nl}{f'{nl}'.join(f'{lesson}' for lesson in (groups_schedule[student_group]))}'"
+            text = f"Привет!\nПредметы на {tomorrow}:{nl}{f'{nl}'.join(f'{lesson}' for lesson in (groups_schedule[student_group]))}"
             bot.send_message(chat_id, text)
 
 
 
 def scheduled_news():
-    pass
+    students = Students.get_all_chat_ids_and_pgroup()
+    today_date = datetime.today().date()
+    news = NewsProvider.getNews(3)
+    news_text = Utils.create_human_readable_news(news)
+    weather = WeatherProvider.getWeatherForDate(today_date)
+    weather_text = Utils.create_weather_for_today(weather)
+    for student in students:
+        bot.send_message(student['chatId'], f"{news_text}\n\n{weather_text}")
 
+
+def threaded_schedule():
+    import time
+
+    schedule.every().day.at("20:00").do(scheduled_schedule)
+    schedule.every().day.at("09:00").do(scheduled_news)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
 if __name__ == '__main__':
+    #scheduled_schedule()
+    #scheduled_news()
+    thread = Thread(target=threaded_schedule)
+    thread.start()
     bot.polling()
-    schedule.every().day.at("20:00").do(scheduled_schedule())

@@ -78,3 +78,22 @@ def create_human_readable_news(news_array):
 def create_weather_for_today(weather_dict):
     return f"🌪Сводка о состоянии возле ГЗ: \n{weather_dict['temp']} градусов, ощущается как {weather_dict['feels_like']}\n" \
            f"{weather_dict['condition']}, направление ветра {weather_dict['wind_dir']}, {weather_dict['wind_speed']}м/c."
+
+
+def generate_menu():
+    commands = ["/start", "/getgroup", "/report", "/schedule", "/tasklist"]
+    keyboard = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+    keyboard.row("/start", "/getgroup", "/report")
+    keyboard.row("/schedule", "/tasklist")
+    return keyboard
+
+
+def generate_help_message():
+    return "Возможные команды:\n" \
+                   "/start - начать общение с ботом\n" \
+                   "/help - помощь с командами\n" \
+                   "/setgroup [номер группы] [Имя, Фамилия] - установить группу\n" \
+                   "/changegroup [номер группы] [Имя, Фамилия] - изменить группу\n" \
+                   "/schedule - выбор расписания на выбранную дату (с помощью меню)\n" \
+                   "/hometask - создание домашнего задания\n" \
+                   "/tasklist - просмотр активных заданий для группы\n"
