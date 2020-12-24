@@ -1,5 +1,5 @@
 from threading import Thread
-
+from Config import Configuration
 import telebot
 import schedule
 from TgBotUI import Utils, CommonMessages
@@ -8,7 +8,7 @@ from TgBotUI import DataBaseExtension as dbExt
 from YandexInfoProvider import WeatherProvider, NewsProvider
 from datetime import datetime, timedelta
 
-token = ''
+token = Configuration.get_config_by_key('telegram-bot-key')
 bot = telebot.TeleBot(token)
 
 
@@ -32,7 +32,8 @@ def set_group(message):
         bot.send_message(message.chat.id, CommonMessages.invalid_arguments)
         UserStatus.del_user_status(user_login)
         return
-    response = Students.update_tg_login(args[1], args[2], args[0], message.chat.id, message.from_user.username)  # name, surname, group, username
+    response = Students.update_tg_login(args[1], args[2], args[0], message.chat.id,
+                                        message.from_user.username)  # name, surname, group, username
     bot.send_message(message.chat.id, response)
     UserStatus.del_user_status(user_login)
 
@@ -64,7 +65,7 @@ def add_home_task(message):
     user_login = message.from_user.username
     group_num = Students.get_group_num(user_login)
     if group_num:
-        schedule_var = dbExt.get_schedule_dates(group_num)   # Add data from another module
+        schedule_var = dbExt.get_schedule_dates(group_num)  # Add data from another module
         keyboards = Utils.create_keyboard_from_string_array(schedule_var, "hometask", days=True)
         bot.send_message(message.chat.id, "Выберите дату для домашнего задания:", reply_markup=keyboards[0])
         UserStatus.del_user_status(user_login)
@@ -109,7 +110,7 @@ def callback_inline(call):
     group_num = Students.get_group_num(user_login)
     if not group_num:
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                  text=CommonMessages.set_group)
+                              text=CommonMessages.set_group)
 
     # schedule and hometask pages check, also schedule day selection included
     if args_dict['command'] == 'schedule' or (args_dict['command'] == 'hometask' and args_dict['step'] == '0'):
@@ -169,7 +170,7 @@ def message_worker(message):
     user_login = message.from_user.username
     group_num = Students.get_group_num(user_login)
     user_status = UserStatus.read_user_status(user_login)
-    #print(user_status)
+    # print(user_status)
     if user_status == "Пользовательский статус ненайден" or len(user_status['data']) < 3:
         return
     command = user_status['data'][0]
@@ -192,7 +193,7 @@ def message_worker(message):
 
 def scheduled_schedule():
     students = Students.get_all_chat_ids_and_pgroup()
-    tomorrow = datetime.today().date().strftime("%d.%m.%Y") #+ timedelta(days=1)).date()
+    tomorrow = (datetime.today().date() + timedelta(days=1)).strftime("%d.%m.%Y")
     groups_schedule = {}
     nl = '\n'
     for student in students:
@@ -203,7 +204,6 @@ def scheduled_schedule():
         if len(groups_schedule[student_group]) > 0:
             text = f"Привет!\nПредметы на {tomorrow}:{nl}{f'{nl}'.join(f'{lesson}' for lesson in (groups_schedule[student_group]))}"
             bot.send_message(chat_id, text)
-
 
 
 def scheduled_news():
@@ -226,9 +226,8 @@ def threaded_schedule():
         schedule.run_pending()
         time.sleep(1)
 
+
 if __name__ == '__main__':
-    #scheduled_schedule()
-    #scheduled_news()
     thread = Thread(target=threaded_schedule)
     thread.start()
     bot.polling()
