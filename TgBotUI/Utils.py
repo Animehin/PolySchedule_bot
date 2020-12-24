@@ -17,6 +17,7 @@ def create_keyboard_from_string_array(array, command, stage=0, days=False):
     keyboard_elements_sorted = []
     elements = []
     for element in array:
+        element = element[:25]
         if not days and len(elements) == keyboard_max_elements:
             keyboard_elements_sorted.append(elements)
             elements = [element]
