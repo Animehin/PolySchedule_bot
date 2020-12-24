@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 import pymongo
 
@@ -14,10 +14,10 @@ last_updated = {}
 def upd_schedule(pgroup):
     global last_updated
 
-    today = datetime.date.today()
+    today = datetime.today().strftime("%d.%m.%Y")
     schVar = ScheduleClient.getSchedule(pgroup, today)
     if schVar == "":
-        return "Фейлед ту апдэйте"
+        return "Не удалось получить расписание"
     collectionSch.delete_many({"pgroup": pgroup})
 
     for day in schVar:
@@ -26,15 +26,15 @@ def upd_schedule(pgroup):
                 {"pgroup": pgroup, "date": day, "time": lesson["time"], "scheduledClass": lesson["scheduledClass"],
                  "classType": lesson["classType"]})
     last_updated[pgroup] = today
-    return "Апдейт кумплитэд"
+    return "Обновление расписания прошло успешно"
 
 
 def read_schedule(pgroup, date=None):
     global last_updated
 
-    if (pgroup not in last_updated) or (last_updated[pgroup] is not datetime.date.today()):
+    if (pgroup not in last_updated) or (last_updated[pgroup] is not datetime.today()):
         upd_schedule(pgroup)
-        last_updated[pgroup] = datetime.date.today()
+        last_updated[pgroup] = datetime.today()
     return get_schedule_from_database(pgroup, date)
 
 
