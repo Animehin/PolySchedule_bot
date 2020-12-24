@@ -11,6 +11,24 @@ def get_scheduled_lessons(pgroup, date):
     return scheduled_lessons
 
 
+def read_schedule_lesson(pgroup, date, className):
+    is_lection = 0
+    shedule_lesson = []
+    sheduled_lessons = Schedule.read_schedule(pgroup, date)
+    for lesson in sheduled_lessons:
+        if className in lesson["scheduledClass"]:
+            shedule_lesson.append(lesson["classType"])
+        print(lesson)
+    if len(shedule_lesson) > 1:
+        for i in shedule_lesson:
+            if i != "Лекция":
+                is_lection += 1
+                return i
+            elif is_lection > 0:
+                return i
+    return shedule_lesson[0]
+
+
 def get_home_tasks(pgroup):
     request = HomeWork.read_home_work(pgroup)
     home_tasks = []

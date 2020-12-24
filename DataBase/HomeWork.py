@@ -9,17 +9,17 @@ dbHW = clientHW['TgBot']
 collectionHW = dbHW['TgBotHW']
 
 
-def add_home_work(pgroup, date, time, className, classType, homeWork, tgLogin):
+def add_home_work(pgroup, date, className, classType, homeWork, tgLogin):
     if (re.search('[0-9]', pgroup) is None) or (re.search('[а-яА-Я]', className) is None) or (
             re.search('[а-яА-Я]', homeWork) is None) or (re.search('[a-zA-Z]', tgLogin) is None):
         return False
 
     if collectionHW.find_one(
-            {"pgroup": pgroup, "date": date, "time": time, "className": className, "classType": classType,
+            {"pgroup": pgroup, "date": date, "className": className, "classType": classType,
              "tgLogin": tgLogin}) is None:
         try:
             collectionHW.insert_one({
-                "pgroup": pgroup, "date": date, "time": time, "className": className, "classType": classType,
+                "pgroup": pgroup, "date": date, "className": className, "classType": classType,
                 "homeWork": homeWork,
                 "tgLogin": tgLogin
             })
@@ -27,7 +27,7 @@ def add_home_work(pgroup, date, time, className, classType, homeWork, tgLogin):
             return False
     else:
         collectionHW.update_one(
-            {"pgroup": pgroup, "date": date, "time": time, "className": className, "classType": classType,
+            {"pgroup": pgroup, "date": date, "className": className, "classType": classType,
              "tgLogin": tgLogin},
             {"$set": {"homeWork": homeWork}})
 
