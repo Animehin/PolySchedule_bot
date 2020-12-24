@@ -4,9 +4,6 @@ from datetime import datetime
 import pymongo
 from dateutil.parser import parse
 
-# import pytz
-# utc = pytz.UTC
-
 clientHW = pymongo.MongoClient('localhost', 27017)
 dbHW = clientHW['TgBot']
 collectionHW = dbHW['TgBotHW']
@@ -38,8 +35,7 @@ def add_home_work(pgroup, date, time, className, classType, homeWork, tgLogin):
 
 
 def read_home_work(pgroup):
-    # today = utc.localize(datetime.today()).date()
-    today = datetime.datetime.today().date()
+    today = datetime.today().date()
     hwlist = []
     res = collectionHW.find({"pgroup": pgroup}, {"_id": 0})
     if res is None:
