@@ -66,3 +66,15 @@ def convertDate(date):
 def parse_callback_data(data):
     args = data.split("_")
     return {'command': args[0], 'step': args[1], 'text': args[2], 'page': args[3]}
+
+
+def create_human_readable_news(news_array):
+    output = "Последние новости за сегодня ☠️\n"
+    for element in news_array:
+        output += f"{element['title']}\n{element['annotation']}\nПодробнее: {element['link'][0]}\n"
+    return output
+
+
+def create_weather_for_today(weather_dict):
+    return f"🌪Сводка о состоянии возле ГЗ: \n{weather_dict['temp']} градусов, ощущается как {weather_dict['feels_like']}\n" \
+           f"{weather_dict['condition']}, направление ветра {weather_dict['wind_dir']}, {weather_dict['wind_speed']}м/c."

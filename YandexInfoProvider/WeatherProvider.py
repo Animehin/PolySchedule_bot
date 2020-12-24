@@ -1,9 +1,8 @@
 import requests
 import datetime
+from YandexInfoProvider import Utils
 from dateutil.parser import parse
 from bs4 import BeautifulSoup
-from YandexInfoProvider import Utils
-
 
 lat = 60.007624
 lon = 30.373195
