@@ -7,7 +7,7 @@ collectionUSList = []
 
 
 def upd_user_status(tgLogin, step, data):
-    collectionUS.update_one({"tgLogin": tgLogin, "step": step},
+    collectionUS.update_one({"tgLogin": tgLogin},
                             {"$set": {"step": step, "data": data}})
 
 
