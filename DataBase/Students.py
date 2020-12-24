@@ -44,7 +44,7 @@ def update_tg_login(fname, name, pgroup, tgLogin):
 def get_group_num(tgLogin):
     group_num = collectionSt.find_one({"tgLogin": tgLogin}, {"_id": 0, "pgroup": 1})
     if group_num is None:
-        return "Пользователь не существует"
+        return False
     else:
         return group_num["pgroup"]
 
@@ -52,7 +52,7 @@ def get_group_num(tgLogin):
 def get_student_by_login(tgLogin):
     student = collectionSt.find_one({"tgLogin": tgLogin})
     if student is None:
-        return "Пользователь не существует"
+        return False
     else:
         return student
 
@@ -60,7 +60,7 @@ def get_student_by_login(tgLogin):
 def get_student_by_fname(fname, name, pgroup):
     student = collectionSt.find_one({"fname": fname, "name": name, "pgroup": pgroup})
     if student is None:
-        return "Пользователь не существует"
+        return False
     else:
         return student
 
