@@ -7,8 +7,12 @@ def get_schedule_dates(pgroup):
 
 
 def get_scheduled_lessons(pgroup, date):
-    scheduled_lessons = Schedule.read_schedule(pgroup, date).distinct("scheduledClass")
-    return scheduled_lessons
+    scheduled_lessons = Schedule.read_schedule(pgroup, date)
+    scheduled_lessons_and_time = []
+    for lesson in scheduled_lessons:
+        a = {"scheduledClass": lesson["scheduledClass"], "time": lesson["time"]}
+        scheduled_lessons_and_time.append(a)
+    return scheduled_lessons_and_time
 
 
 def read_schedule_lesson(pgroup, date, className):
