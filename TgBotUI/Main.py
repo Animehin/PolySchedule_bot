@@ -130,8 +130,10 @@ def callback_inline(call):
     if args_dict['command'] == 'schedule':
         schedule = dbExt.get_scheduled_lessons(group_num, args_dict['text'])
         nl = '\n'
+        time_key = 'time'
+        class_key = 'scheduledClass'
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                              text=f"Предметы на {args_dict['text']}:{nl}{f'{nl}'.join(f'{lesson}' for lesson in schedule)}")
+                              text=f"Предметы на {args_dict['text']}:{nl}{f'{nl}'.join(f'{lesson[time_key]}: {lesson[class_key]}' for lesson in schedule)}")
         return
 
     if args_dict['command'] == 'hometask':
