@@ -98,6 +98,6 @@ def generate_help_message():
                    "/hometask - создание домашнего задания\n" \
                    "/tasklist - просмотр активных заданий для группы\n"
 
-
+  
 def get_lessons_name_from_schedule(array):
     return {element['scheduledClass'] for element in array}
