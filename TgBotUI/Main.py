@@ -80,6 +80,9 @@ def task_list(message):
     group_num = Students.get_group_num(user_login)
     if group_num:
         homeworks = dbExt.get_home_tasks(group_num)
+        if len(homeworks) == 0:
+            bot.send_message(message.chat.id, f"Заданий нет.")
+            return
         ln = '\n=============================\n'
         bot.send_message(message.chat.id, f"{ln.join(task for task in homeworks)}")
     else:
@@ -139,7 +142,7 @@ def callback_inline(call):
 
     if args_dict['command'] == 'hometask':
         if args_dict['step'] == '0':
-            schedule = dbExt.get_scheduled_lessons(group_num, args_dict['text'])
+            schedule = Utils.get_lessons_name_from_schedule(dbExt.get_scheduled_lessons(group_num, args_dict['text']))
             keyboards = Utils.create_keyboard_from_string_array(schedule, args_dict['command'], stage=1)
             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
                                   text=f"Выберите из списка предметов:",

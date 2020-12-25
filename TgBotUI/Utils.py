@@ -76,7 +76,7 @@ def create_human_readable_news(news_array):
 
 
 def create_weather_for_today(weather_dict):
-    return f"🌪Сводка о состоянии погоды возле ГЗ: \n{weather_dict['temp']} градусов, ощущается как {weather_dict['feels_like']}\n" \
+        return f"🌪Сводка о состоянии погоды возле ГЗ: \n{weather_dict['temp']} градусов, ощущается как {weather_dict['feels_like']}\n" \
            f"{weather_dict['condition']}, направление ветра {weather_dict['wind_dir']}, {weather_dict['wind_speed']}м/c."
 
 
@@ -97,3 +97,7 @@ def generate_help_message():
                    "/schedule - выбор расписания на выбранную дату (с помощью меню)\n" \
                    "/hometask - создание домашнего задания\n" \
                    "/tasklist - просмотр активных заданий для группы\n"
+
+
+def get_lessons_name_from_schedule(array):
+    return {element['scheduledClass'] for element in array}
