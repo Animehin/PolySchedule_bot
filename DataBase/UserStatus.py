@@ -12,7 +12,7 @@ def upd_user_status(tgLogin, step, data):
 
 
 def add_user_status(tgLogin, step, data):
-    if collectionUS.find_one({"tgLogin": tgLogin, "data": data}) is None:
+    if collectionUS.find_one({"tgLogin": tgLogin}) is None:
         try:
             collectionUS.insert_one({"tgLogin": tgLogin, "step": step, "data": data})
         except pymongo.errors.WriteError:
